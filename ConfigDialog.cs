@@ -53,9 +53,9 @@ namespace FusLogConfig
         private void FusionConfigDialog_Load(object sender, EventArgs e)
         {
             _configuration = FusionRegistry.ReadLogConfiguration();
-            chkForceLog.CheckState = ToCheckState(_configuration.ForceLog);
-            chkLogFailures.CheckState = ToCheckState(_configuration.LogFailures);
-            chkLogResourceBinds.CheckState = ToCheckState(_configuration.LogResourceBinds);
+            chkForceLog.Checked = _configuration.ForceLog;
+            chkLogFailures.Checked = _configuration.LogFailures;
+            chkLogResourceBinds.Checked = _configuration.LogResourceBinds;
             txtLogPath.Text = _configuration.LogPath ?? "";
 
             if (AdminProcessStarter.ElevationRequired)
@@ -85,17 +85,6 @@ namespace FusLogConfig
                                               _configuration.LogPath = txtLogPath.Text;
                                               btnApply.Enabled = true;
                                           };
-        }
-
-        private CheckState ToCheckState(bool? value)
-        {
-            if(value.HasValue)
-            {
-                return value.Value ? CheckState.Checked : CheckState.Unchecked;
-            } else
-            {
-                return CheckState.Indeterminate;
-            }
         }
 
         private void Apply()
