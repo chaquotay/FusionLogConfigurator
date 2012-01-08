@@ -15,13 +15,16 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+using System.ComponentModel;
 using System.Diagnostics;
+using System.Reflection;
 using System.Security.Principal;
 
 namespace FusLogConfig
 {
     internal class AdminProcessStarter
     {
+        private const int ElevationDeniedByUser = 1223;
 
         private static bool IsAdmin
         {
@@ -36,16 +39,44 @@ namespace FusLogConfig
             get { return !IsAdmin; }
         }
 
-        public static void Start(Process process)
+        public static bool StartSelf(string arguments)
         {
-            if(ElevationRequired)
+            var path = Assembly.GetExecutingAssembly().CodeBase;
+            return Start(path, arguments);
+        }
+
+        public static bool Start(string exe, string arguments)
+        {
+            var start = new ProcessStartInfo(exe, arguments);
+            var proc = new Process {StartInfo = start};
+            return Start(proc);
+        }
+
+        public static bool Start(Process process)
+        {
+            if (ElevationRequired)
             {
                 process.StartInfo.UseShellExecute = true;
                 process.StartInfo.Verb = "runas";
-
             }
-            process.Start();
+
+            try
+            {
+                process.Start();
+            }
+            catch (Win32Exception ex)
+            {
+                // TODO: Feedback to user
+                var elevationDeniedByUser = ex.NativeErrorCode == ElevationDeniedByUser;
+                return false;
+            }
+            catch
+            {
+                // TODO: Feedback to user
+                return false;
+            }
             process.WaitForExit();
+            return true;
         }
     }
 }

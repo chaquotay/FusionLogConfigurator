@@ -16,7 +16,6 @@
  */
 
 using System;
-using System.Diagnostics;
 using System.IO;
 using System.Runtime.InteropServices;
 using System.Windows.Forms;
@@ -87,14 +86,10 @@ namespace FusLogConfig
                                           };
         }
 
-        private void Apply()
+        private bool Apply()
         {
             var args = CommandLine.Format(_configuration);
-            var exePath = Application.ExecutablePath;
-            var start = new ProcessStartInfo(exePath, args);
-            var proc = new Process();
-            proc.StartInfo = start;
-            AdminProcessStarter.Start(proc);
+            return AdminProcessStarter.StartSelf(args);
         }
 
         private void Exit()
@@ -115,8 +110,8 @@ namespace FusLogConfig
 
         private void btnApply_Click(object sender, EventArgs e)
         {
-            Apply();
-            btnApply.Enabled = false;
+            if(Apply())
+                btnApply.Enabled = false;
         }
 
 
@@ -124,9 +119,9 @@ namespace FusLogConfig
         [DllImport("user32")]
         public static extern UInt32 SendMessage (IntPtr hWnd, UInt32 msg, UInt32 wParam, UInt32 lParam);
 
-        internal const int BCM_FIRST = 0x1600; //Normal button
+        private const int BCM_FIRST = 0x1600; //Normal button
 
-        internal const int BCM_SETSHIELD = (BCM_FIRST + 0x000C); //Elevated button
+        private const int BCM_SETSHIELD = (BCM_FIRST + 0x000C); //Elevated button
 
         static internal void AddShieldToButton(Button b)
         {
