@@ -65,9 +65,9 @@ namespace FusLogConfig
             this.chkLogFailures.AutoSize = true;
             this.chkLogFailures.Location = new System.Drawing.Point(18, 34);
             this.chkLogFailures.Name = "chkLogFailures";
-            this.chkLogFailures.Size = new System.Drawing.Size(183, 17);
+            this.chkLogFailures.Size = new System.Drawing.Size(182, 17);
             this.chkLogFailures.TabIndex = 0;
-            this.chkLogFailures.Text = "Bind failures of normal assemblies";
+            this.chkLogFailures.Text = "Failed binds of normal assemblies";
             this.chkLogFailures.UseVisualStyleBackColor = true;
             // 
             // chkForceLog
@@ -166,7 +166,7 @@ namespace FusLogConfig
             this.txtLogPath.Size = new System.Drawing.Size(377, 20);
             this.txtLogPath.TabIndex = 7;
             // 
-            // FusionConfigDialog
+            // ConfigDialog
             // 
             this.AcceptButton = this.btnOK;
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -181,7 +181,7 @@ namespace FusLogConfig
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.MaximizeBox = false;
-            this.Name = "FusionConfigDialog";
+            this.Name = "ConfigDialog";
             this.Text = "Fusion Log Configurator";
             this.Load += new System.EventHandler(this.FusionConfigDialog_Load);
             this.groupBox1.ResumeLayout(false);
