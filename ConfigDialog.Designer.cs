@@ -146,7 +146,7 @@ namespace FusLogConfig
             this.groupBox2.Size = new System.Drawing.Size(429, 71);
             this.groupBox2.TabIndex = 11;
             this.groupBox2.TabStop = false;
-            this.groupBox2.Text = "Log path";
+            this.groupBox2.Text = "Log directory";
             // 
             // btnBrowseLogPath
             // 

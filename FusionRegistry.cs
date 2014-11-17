@@ -28,7 +28,7 @@ namespace FusLogConfig
                 cfg.LogFailures = ToBoolValue(fusionKey.GetValue("LogFailures"));
                 cfg.ForceLog = ToBoolValue(fusionKey.GetValue("ForceLog"));
                 cfg.LogResourceBinds = ToBoolValue(fusionKey.GetValue("LogResourceBinds"));
-                cfg.LogPath = (string)fusionKey.GetValue("LogPath");
+                cfg.LogDirectory = (string)fusionKey.GetValue("LogPath");
             }
             
             return cfg;
@@ -45,7 +45,7 @@ namespace FusLogConfig
             {
                 fusionKey.SetValue("LogFailures", ToInt(configuration.LogFailures));
                 fusionKey.SetValue("ForceLog", ToInt(configuration.ForceLog));
-                fusionKey.SetValue("LogPath", configuration.LogPath);
+                fusionKey.SetValue("LogPath", configuration.LogDirectory);
                 fusionKey.SetValue("LogResourceBinds", ToInt(configuration.LogResourceBinds));
             }
         }

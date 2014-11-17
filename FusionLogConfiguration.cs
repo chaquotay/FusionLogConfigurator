@@ -22,6 +22,6 @@ namespace FusLogConfig
         public bool ForceLog { get; set; }
         public bool LogFailures { get; set; }
         public bool LogResourceBinds { get; set; }
-        public string LogPath { get; set; }
+        public string LogDirectory { get; set; }
     }
 }

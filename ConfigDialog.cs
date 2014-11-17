@@ -40,7 +40,7 @@ namespace FusLogConfig
                 {
                     dlg.SelectedPath = oldPath;
                 }
-                dlg.Description = "Select Fusion log path:";
+                dlg.Description = "Select Fusion log directory:";
                 if (dlg.ShowDialog() == DialogResult.OK)
                 {
                     var selectedPath = dlg.SelectedPath;
@@ -55,7 +55,7 @@ namespace FusLogConfig
             chkForceLog.Checked = _configuration.ForceLog;
             chkLogFailures.Checked = _configuration.LogFailures;
             chkLogResourceBinds.Checked = _configuration.LogResourceBinds;
-            txtLogPath.Text = _configuration.LogPath ?? "";
+            txtLogPath.Text = _configuration.LogDirectory ?? "";
 
             if (AdminProcessStarter.ElevationRequired)
             {
@@ -81,15 +81,87 @@ namespace FusLogConfig
                                                          };
             txtLogPath.TextChanged += delegate
                                           {
-                                              _configuration.LogPath = txtLogPath.Text;
+                                              _configuration.LogDirectory = txtLogPath.Text;
                                               btnApply.Enabled = true;
                                           };
         }
 
         private bool Apply()
         {
+            if (!IsConfigurationValid())
+                return false;
+
             var args = CommandLine.Format(_configuration);
             return AdminProcessStarter.StartSelf(args);
+        }
+
+        private bool IsConfigurationValid()
+        {
+            var logPath = _configuration.LogDirectory;
+
+            if (!DirectoryNameIsValid(logPath))
+            {
+                Error("The directory name '{0}' is not valid.", logPath);
+                return false;
+            }
+
+            if (Directory.Exists(logPath))
+                return true;
+
+            if (File.Exists(logPath))
+            {
+                Error("Cannot use {0} as the log path because it points to an existing file. Either delete the file or specifiy a different log directory!", logPath);
+                return false;
+            }
+
+            var logDirectoryQuestion = string.Format("The log directory {0} does not exist. Should it be created?", logPath);
+            var result = MessageBox.Show(this, logDirectoryQuestion, "Log directory", MessageBoxButtons.YesNoCancel, MessageBoxIcon.Question);
+
+            if (result == DialogResult.Cancel)
+                return false;
+
+            if (result == DialogResult.Yes)
+            {
+                var failedToCreate = !TryCreateDirectory(logPath);
+                if (failedToCreate)
+                    return false;
+            }
+
+            return true;
+        }
+
+        private bool DirectoryNameIsValid(string name)
+        {
+            if (string.IsNullOrEmpty(name))
+                return false;
+
+            if (name.IndexOfAny(Path.GetInvalidPathChars()) >= 0)
+                return false;
+
+            return true;
+        }
+
+        private bool TryCreateDirectory(string logPath)
+        {
+            try
+            {
+                Directory.CreateDirectory(logPath);
+                return Directory.Exists(logPath) ;
+            }
+            catch (Exception ex)
+            {
+                if (Directory.Exists(logPath))
+                    return true;
+
+                return Error("Directory {0} could not be created: {1}", logPath, ex.Message);
+            }
+        }
+
+        private bool Error(string format, params object[] args)
+        {
+            var message = string.Format(format, args);
+            MessageBox.Show(this, message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            return false;
         }
 
         private void Exit()

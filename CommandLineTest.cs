@@ -52,10 +52,10 @@ namespace FusLogConfig
         public void TestParsePath()
         {
             var delta = Parse();
-            Assert.IsNull(delta.LogPath);
+            Assert.IsNull(delta.LogDirectory);
 
             delta = Parse(@"/path:c:\foo\bar\baz");
-            Assert.AreEqual(@"c:\foo\bar\baz", delta.LogPath);
+            Assert.AreEqual(@"c:\foo\bar\baz", delta.LogDirectory);
         }
 
         private FusionLogConfiguration Parse(params string[] args)

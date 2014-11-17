@@ -35,7 +35,7 @@ namespace FusLogConfig
                                     "/force" + (configuration.ForceLog ? '+' : '-'),
                                     "/failures" + (configuration.LogFailures ? '+' : '-'),
                                     "/resources" + (configuration.LogResourceBinds ? '+' : '-'),
-                                    "\"/path:" + (configuration.LogPath ?? "") + "\""
+                                    "\"/path:" + (configuration.LogDirectory ?? "") + "\""
                                 };
             return string.Join(" ", arguments);
         }
@@ -67,7 +67,7 @@ namespace FusLogConfig
                 yield return FlagParse(ForceLogPattern, f => delta.ForceLog = f);
                 yield return FlagParse(FailuresLogPattern, f => delta.LogFailures = f);
                 yield return FlagParse(ResourcesPattern, f => delta.LogResourceBinds = f);
-                yield return StringParse(PathPattern, s => delta.LogPath = s);
+                yield return StringParse(PathPattern, s => delta.LogDirectory = s);
             }
         }
 
